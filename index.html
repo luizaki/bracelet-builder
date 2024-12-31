@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <title>Bracelet Order Form</title>
+
+        <link href="./src/output.css" rel="stylesheet">
+    </head>
+
+    <body class="prose max-w-screen-2xl mx-2 bg-light-purple">
+        <h1 class="mx-3 mt-10 text-center select-none">Bracelet Order Form</h1>
+
+        <hr class="mt-1 border-t-2 border-gray-300" />
+
+        <div id="builder">
+            <div id="preview">
+                <h2 class="text-center select-none">Preview</h2>
+                <div id="bracelet-preview" class="mx-auto w-3/4 rounded-lg p-12 bg-white shadow"></div>
+            </div>
+
+            <div id="bead-selector" class="grid mx-auto w-3/4 gap-4 grid-cols-1 md:grid-cols-2">
+                <h2 class="text-center col-span-full">Choose your beads</h2>
+                <div id="color-beads" class="relative mx-auto mb-2 w-full rounded-lg p-1 bg-white shadow">
+                    <h3 class="text-center">Color Beads</h3>
+                </div>
+
+                <div id="letter-beads" class="relative mx-auto mb-2 w-full rounded-lg p-1 bg-white shadow">
+                    <h3 class="text-center">Letter Beads</h3>
+                </div>
+
+                <div id="misc-beads" class="relative mx-auto w-full md:w-1/2 rounded-lg p-1 col-span-1 md:col-span-2 bg-white shadow">
+                    <h3 class="text-center">Miscellaneous Beads</h3>
+                </div>
+            </div>
+        </div>
+
+        <hr class="border-t-2 border-gray-300"/>
+
+        <h2 class="text-center">Order Details</h2>
+        <div id="order" class="mx-auto w-3/4 rounded-lg p-10 md:p-20 bg-white shadow">
+            <form class="flex flex-col gap-10">
+              <label class="flex flex-col">
+                  <span class="text-md font-medium">Full Name</span>
+                  <input type="text" id="full-name" required class="mt-1 p-2 border rounded" placeholder="Juan Dela Cruz" />
+              </label>
+
+              <label class="flex flex-col">
+                  <span class="text-md font-medium">Email</span>
+                  <input type="email" id="email" required class="mt-1 p-2 border rounded" placeholder="example@example.com" />
+              </label>
+
+            <div class="flex justify-center">
+                <button type="submit" class="bg-violet-800 text-white py-2 px-4 mt-3 w-1/2 rounded hover:bg-violet-900">Submit</button>
+            </div>
+            </form>
+        </div>
+        
+        <a href="https://github.com/luizaki/bracelet-builder" class="flex justify-center my-10">
+            <ion-icon name="logo-github" class="text-4xl text-violet-300 hover:text-violet-500"></ion-icon>
+        </a>
+
+        <script src="./src/script.js"></script>
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    </body>
+</html>
