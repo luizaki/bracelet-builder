@@ -11,6 +11,14 @@ const braceletPreview = document.getElementById("bracelet-preview");
 const colorContainer = document.getElementById('color-beads');
 const letterContainer = document.getElementById('letter-beads');
 const miscContainer = document.getElementById('misc-beads');
+const saveButton = document.getElementById('save-button');
+const savedBracelets = document.getElementById('saved-bracelets');
+
+// for drag/drop events
+let draggedBead = null;
+
+// tracking bracelets
+let bracelets = [];
 
 // fetch beads table
 async function fetchBeads() {
@@ -55,7 +63,7 @@ async function populateBeads() {
             // create heart inside div
             const heart = document.createElement('ion-icon');
             heart.setAttribute('name', 'heart');
-            heart.style.fontSize = '1.25rem'; // adjust size of the heart icon
+            heart.style.fontSize = '1.25rem';
             heart.style.color = bead.color;
 
             beadElement.appendChild(heart);
@@ -71,10 +79,6 @@ async function populateBeads() {
         });
     });
   }
-
-// Track the dragged bead
-let draggedBead = null;
-let initialTouchX = 0;
 
 function addToBracelet(bead) {
     const newBead = bead.cloneNode(true);
@@ -159,6 +163,77 @@ function getDragAfterElement(container, x) {
             return closest;
         }
     }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+// save bracelet to make new bracelet
+saveButton.addEventListener('click', () => {
+    if (braceletPreview.children.length === 0) {
+        alert('Add some beads to the bracelet first!');
+        return;
+    }
+
+    // get beads from bracelet preview to save
+    const beads = Array.from(braceletPreview.children).map((bead) => bead.cloneNode(true));
+    bracelets.push(beads);
+
+    const braceletWrapper = document.createElement("div");
+    braceletWrapper.classList.add("flex", "flex-col", "gap-2", "items-center", "justify-between", "p-4", "bg-white", "rounded-lg", "shadow");
+    braceletWrapper.dataset.index = bracelets.length - 1;
+
+    const braceletDisplay = document.createElement("div");
+    braceletDisplay.classList.add("flex", "flex-wrap", "justify-center", "items-center");
+
+    beads.forEach((bead) => braceletDisplay.appendChild(bead));
+
+    // edit/delete buttons
+    const buttonContainer = document.createElement("div");
+    buttonContainer.classList.add("flex", "gap-4", "mt-2");
+
+    const editButton = document.createElement("button");
+    const edit = document.createElement('ion-icon');
+    edit.setAttribute('name', 'pencil');
+    editButton.appendChild(edit);
+    editButton.classList.add("bg-yellow-500", "text-white", "py-1", "px-4", "rounded", "hover:bg-yellow-600");
+    editButton.onclick = () => editBracelet(braceletWrapper.dataset.index);
+
+    const deleteButton = document.createElement("button");
+    const deleteIcon = document.createElement('ion-icon');
+    deleteIcon.setAttribute('name', 'trash');
+    deleteButton.appendChild(deleteIcon);
+    deleteButton.classList.add("bg-red-500", "text-white", "py-1", "px-4", "rounded", "hover:bg-red-600");
+    deleteButton.onclick = () => deleteBracelet(braceletWrapper.dataset.index);
+
+    // form the full bracelet div
+    buttonContainer.append(editButton, deleteButton);
+    braceletWrapper.append(braceletDisplay, buttonContainer);
+    savedBracelets.appendChild(braceletWrapper);
+
+    // clear bracelet preview
+    braceletPreview.innerHTML = "";
+    alert('Bracelet saved!');
+});
+
+function editBracelet(index) {
+    // retrieve beads
+    const beads = bracelets[index];
+
+    // re-add beads to rpeview
+    beads.forEach(bead => {
+        addToBracelet(bead);
+    });
+
+    // remove from savedBracelets
+    bracelets.splice(index, 1);
+    savedBracelets.children[index].remove();
+}
+
+function deleteBracelet(index) {
+    bracelets.splice(index, 1);
+    savedBracelets.children[index].remove();
+
+    Array.from(savedBracelets.children).forEach((wrapper, newIndex) => {
+        wrapper.dataset.index = newIndex;
+    });
 }
 
 populateBeads();
