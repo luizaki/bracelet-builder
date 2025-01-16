@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 // init supabase
 const supabase = createClient(
     process.env.VITE_SUPABASE_URL,
-    process.env.VITE_SUPABASE_KEY
+    process.env.VITE_SUPABASE_ANON_KEY
 );
 
 // divs
