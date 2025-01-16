@@ -6,6 +6,7 @@ import autoprefixer from 'autoprefixer';
 dotenv.config();
 
 export default defineConfig({
+  base: '/bracelet-builder/',
   css: {
     postcss: {
       plugins: [
