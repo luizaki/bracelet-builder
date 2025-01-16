@@ -58,21 +58,31 @@
         <hr class="border-t-2 border-gray-300"/>
 
         <h2 class="text-center">Order Details</h2>
-        <div id="order" class="mx-auto w-3/4 rounded-lg p-10 md:p-20 bg-white shadow">
+        <div id="order-form" class="mx-auto w-3/4 rounded-lg p-10 md:p-20 bg-white shadow">
             <form class="flex flex-col gap-10">
-              <label class="flex flex-col">
-                  <span class="text-md font-medium">Full Name</span>
-                  <input type="text" id="full-name" required class="mt-1 p-2 border rounded" placeholder="Juan Dela Cruz" />
-              </label>
+                <div>
+                    <label for="full-name" class="flex flex-col text-md font-medium">Full Name</label>
+                    <input type="text" id="full-name" required class="mt-1 p-2 w-full border rounded" placeholder="Juan Dela Cruz" />
+                </div>
 
-              <label class="flex flex-col">
-                  <span class="text-md font-medium">Email</span>
-                  <input type="email" id="email" required class="mt-1 p-2 border rounded" placeholder="example@example.com" />
-              </label>
+                <div>
+                    <label for="email" class="flex flex-col text-md font-medium">Email</label>
+                    <input type="text" id="email" required class="mt-1 p-2 w-full border rounded" placeholder="example@example.com" />
+                </div>
 
-            <div class="flex justify-center">
-                <button type="submit" class="bg-violet-800 text-white py-2 px-4 mt-3 w-1/2 rounded hover:bg-violet-900">Submit</button>
-            </div>
+                <div>
+                    <label for="phone" class="flex flex-col text-md font-medium">Phone Number</label>
+                    <input type="text" id="phone" required class="mt-1 p-2 w-full border rounded" placeholder="09123456789" />
+                </div>
+
+                <div>
+                    <label for="proof-of-payment" class="flex flex-col text-md font-medium">Proof of Payment</label>
+                    <input type="file" accept="image/*" id="proof-of-payment" required class="mt-1 p-2 w-full border rounded" />
+                </div>
+
+                <div class="flex justify-center">
+                    <button type="submit" class="bg-violet-800 text-white py-2 px-4 mt-3 w-1/2 rounded hover:bg-violet-900">Submit</button>
+                </div>
             </form>
         </div>
         
