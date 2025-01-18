@@ -290,15 +290,17 @@ function updateBilling() {
 
         billing.innerHTML = '<p class="font-bold">Order Summary:</p>'; // reset the billing
 
+        billing.innerHTML += `<div class="grid grid-cols-3 gap-1 mt-1">`;
+
         if(singleBracelets > 0) {
-            billing.innerHTML += `<p>&ensp;Bead bracelets&ensp;&emsp;&emsp;&emsp;(${singleBracelets}x)&emsp;Php ${soloPrice}</p>`;
+            billing.innerHTML += `<div class="flex justify-between"><span>Bead bracelets</span><span class="text-center">(${singleBracelets}x)</span><span class="text-right">Php ${soloPrice}</span></div>`;
         }
 
         if(pairBracelets > 0) {
-            billing.innerHTML += `<p>&ensp;Bead bracelets (couple set)&emsp;(${pairBracelets}x)&emsp;&emsp;Php ${pairPrice}</p>`;
+            billing.innerHTML += `<div class="flex justify-between"><span>Bead bracelets (pair)</span><span class="text-center">(${pairBracelets}x)</span><span class="text-right">Php ${pairPrice}</span></div>`;
         }
 
-        billing.innerHTML += `<hr class="border-t-2 m-0 border-gray-300" /><p class="font-bold mt-2">&ensp;Total:&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Php ${soloPrice + pairPrice}</p>`;
+        billing.innerHTML += `<hr class="border-t-2 m-0 border-gray-300" /><div class="flex justify-between"><span class="font-bold mt-2">Total</span><span></span><span class="text-right">Php ${soloPrice + pairPrice}</span></div></div>`;
     }
 }
 
