@@ -6,19 +6,30 @@ const supabase = createClient(
     process.env.VITE_SUPABASE_ANON_KEY
 );
 
-// divs
+// divs for the builder
 const braceletPreview = document.getElementById("bracelet-preview");
 const colorContainer = document.getElementById('color-beads');
 const letterContainer = document.getElementById('letter-beads');
 const miscContainer = document.getElementById('misc-beads');
+
+// divs for saving bracelets
 const saveButton = document.getElementById('save-button');
 const savedBracelets = document.getElementById('saved-bracelets');
+
+// divs for submitting orders
+const billingContainer = document.getElementById('billing-payment');
+const billing = document.getElementById('billing-details');
+const orderForm = document.getElementById('order-form');
 
 // for drag/drop events
 let draggedBead = null;
 
 // tracking bracelets
 let bracelets = [];
+
+// consts
+const pricePerPair = 60;
+const pricePerSolo = 39;
 
 // fetch beads table
 async function fetchBeads() {
@@ -225,6 +236,10 @@ saveButton.addEventListener('click', () => {
 
     // clear bracelet preview
     braceletPreview.innerHTML = "";
+
+    // update billing
+    updateBilling();
+
     alert('Bracelet saved!');
 });
 
@@ -250,6 +265,37 @@ function deleteBracelet(index) {
     Array.from(savedBracelets.children).forEach((wrapper, newIndex) => {
         wrapper.dataset.index = newIndex;
     });
+
+    updateBilling();
+}
+
+// track billing
+function updateBilling() {
+    // hide if no bracelets are made/bracelets are deleted
+    if(bracelets.length === 0) {
+        billingContainer.style.display = 'none';
+    } else {
+        billingContainer.style.display = 'grid';
+
+        const braceletCount = bracelets.length;
+
+        const singleBracelets = braceletCount % 2;
+        const pairBracelets = Math.floor(braceletCount / 2);
+
+        const soloPrice = singleBracelets * pricePerSolo;
+        const pairPrice = pairBracelets * pricePerPair;
+
+        billing.innerHTML = '<p class="font-bold">Order Summary:</p>'; // reset the billing
+
+        if(singleBracelets > 0) {
+            billing.innerHTML += `<p>&ensp;Bead bracelets&ensp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;(${singleBracelets}x)&emsp;Php ${soloPrice}</p>`;
+        }
+
+        if(pairBracelets > 0) {
+            billing.innerHTML += `<p>&ensp;Bead bracelets (couple set)&emsp;(${pairBracelets}x)&emsp;&emsp;Php ${pairPrice}</p>`;
+        }
+    }
 }
 
 populateBeads();
+billingContainer.style.display = 'none'; // hide billing by default
