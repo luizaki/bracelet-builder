@@ -316,7 +316,7 @@ orderForm.addEventListener('submit', async (e) => {
     try {
         // upload proof of payment
         const file = `${formatDate(Date.now())}-${name.replaceAll(' ', '')}.${proofOfPayment.name.split('.').pop().toLowerCase()}`;
-        const { fileData, fileError } = await supabase.storage.from('proof-of-payments').upload(file, proofOfPayment);
+        const { data: fileData, error: fileError } = await supabase.storage.from('proof-of-payments').upload(file, proofOfPayment);
 
         if(fileError) {
             console.error(fileError);
@@ -325,14 +325,14 @@ orderForm.addEventListener('submit', async (e) => {
         }
 
         // upload order data
-        const { orderData, orderError } = await supabase.from('orders').insert([
+        const { data: orderData, error: orderError } = await supabase.from('orders').insert([
             {
                 name: name,
                 email: email,
                 phone_number: phoneNumber,
                 proof_of_payment: `proof-of-payments/${file}`,
             }
-        ])
+        ]).select();
 
         if(orderError) {
             console.error(orderError);
@@ -342,7 +342,7 @@ orderForm.addEventListener('submit', async (e) => {
 
         // upload bracelet data
         for(const bracelet of bracelets) {
-            const { braceletData, braceletError } = await supabase.from('bracelets').insert([
+            const { error: braceletError } = await supabase.from('bracelets').insert([
                 {
                     order_id: orderData[0].id,
                     beads: convertBraceletToJson(bracelet),
