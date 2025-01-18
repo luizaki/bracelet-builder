@@ -38,7 +38,7 @@ const pricePerSolo = 39;
 async function fetchBeads() {
     const { data, error } = await supabase.from('beads').select().order('created_at', { ascending: true });
   
-    if (error) {
+    if(error) {
         console.error('Error fetching beads:', error);
         return [];
     }
@@ -55,11 +55,11 @@ async function populateBeads() {
         // add hover classes for ux
         beadElement.classList.add("cursor-pointer", "hover:scale-110", "transition-transform");
 
-        if (bead.type === 'color') {
+        if(bead.type === 'color') {
             colorContainer.appendChild(beadElement);
-        } else if (bead.type === 'letter') {
+        } else if(bead.type === 'letter') {
             letterContainer.appendChild(beadElement);
-        } else if (bead.type === 'misc') {
+        } else if(bead.type === 'misc') {
             miscContainer.appendChild(beadElement);
         }
 
@@ -76,16 +76,16 @@ function createBeadElement(bead) {
     beadElement.id = `bead-${bead.id}`;
     beadElement.title = bead.proper_name;
 
-    if (bead.type === 'color') {
-        if (bead.id === 'white') {
+    if(bead.type === 'color') {
+        if(bead.id === 'white') {
             beadElement.classList.add("bg-white", "text-black", "border", "border-gray-400");
         } else {
             beadElement.style.backgroundColor = bead.color;
         }
-    } else if (bead.type === 'letter') {
+    } else if(bead.type === 'letter') {
         beadElement.classList.add("bg-white", "text-black", "border", "border-gray-400", "flex", "items-center", "justify-center", "text-center", "font-bold");
         beadElement.textContent = bead.proper_name;
-    } else if (bead.type === 'misc') {
+    } else if(bead.type === 'misc') {
         beadElement.classList.add("bg-white", "text-black", "border", "border-gray-400", "flex", "items-center", "justify-center");
 
         // create heart inside div
@@ -107,7 +107,7 @@ function addToBracelet(bead) {
     newBead.setAttribute('draggable', 'true');
 
     // resize color beads
-    if (!(newBead.classList.contains('items-center'))) {
+    if(!(newBead.classList.contains('items-center'))) {
         newBead.classList.remove('w-10', 'h-10');
         newBead.classList.add('w-7', 'h-7');
     }
@@ -148,7 +148,7 @@ function addToBracelet(bead) {
         const touchX = e.touches[0].clientX;
         const afterElement = getDragAfterElement(braceletPreview, touchX);
 
-        if (afterElement == null) {
+        if(afterElement == null) {
             braceletPreview.appendChild(draggedBead);
         } else {
             braceletPreview.insertBefore(draggedBead, afterElement);
@@ -169,7 +169,7 @@ braceletPreview.addEventListener('dragover', (e) => {
 
     const afterElement = getDragAfterElement(braceletPreview, e.clientX);
 
-    if (afterElement == null) {
+    if(afterElement == null) {
         braceletPreview.appendChild(draggedBead);
     } else {
         braceletPreview.insertBefore(draggedBead, afterElement);
@@ -183,7 +183,7 @@ function getDragAfterElement(container, x) {
     return draggableElements.reduce((closest, child) => {
         const box = child.getBoundingClientRect();
         const offset = x - box.left - box.width / 2;
-        if (offset < 0 && offset > closest.offset) {
+        if(offset < 0 && offset > closest.offset) {
             return { offset: offset, element: child };
         } else {
             return closest;
@@ -193,8 +193,8 @@ function getDragAfterElement(container, x) {
 
 // save bracelet to make new bracelet
 saveButton.addEventListener('click', () => {
-    if (braceletPreview.children.length === 0) {
-        alert('Add some beads to the bracelet first!');
+    if(braceletPreview.children.length === 0) {
+        displayMessage(document.getElementById('preview'), 'Add some beads to the bracelet first!', 'error');
         return;
     }
 
@@ -243,7 +243,7 @@ saveButton.addEventListener('click', () => {
     // update billing
     updateBilling();
 
-    alert('Bracelet saved!');
+    displayMessage(document.getElementById('preview'), 'Bracelet saved!', 'success');
 });
 
 function editBracelet(index) {
@@ -320,7 +320,7 @@ orderForm.addEventListener('submit', async (e) => {
 
         if(fileError) {
             console.error(fileError);
-            alert('An error occurred while uploading the file.');
+            displayMessage(orderForm, 'An error occurred while uploading the file.', 'error');
             return;
         }
 
@@ -336,7 +336,7 @@ orderForm.addEventListener('submit', async (e) => {
 
         if(orderError) {
             console.error(orderError);
-            alert('An error occurred while submitting the order.');
+            displayMessage(orderForm, 'An error occurred while submitting the order.', 'error');
             return;
         }
 
@@ -351,19 +351,19 @@ orderForm.addEventListener('submit', async (e) => {
 
             if(braceletError) {
                 console.error(braceletError);
-                alert('An error occurred while submitting the bracelet.');
+                displayMessage(orderForm, 'An error occurred while submitting the bracelet.', 'success');
                 return;
             }
         }
 
-        alert('Order submitted successfully!');
+        displayMessage(orderForm, 'Order submitted successfully!', 'success');
 
         // reset page
         location.reload();
 
     } catch (error) {
         console.error(error);
-        alert('An unexpected error occurred.');
+        displayMessage(orderForm, 'An unexpected error occurred.', 'error');
     }
 });
 
@@ -386,6 +386,20 @@ function convertBraceletToJson(beads) {
         id: (bead.id).slice(5), // remove bead- prefix
         position: index
     }));
+}
+
+// helper function for success/error messages
+function displayMessage(div, message, type) {
+    const messageDiv = document.createElement('div');
+
+    messageDiv.className = `text-center p-3 ${type === 'error' ? 'text-red-600' : 'text-green-600'}`;
+    messageDiv.textContent = message;
+
+    div.appendChild(messageDiv);
+
+    setTimeout(() => {
+        div.removeChild(messageDiv);
+    }, 2000);
 }
 
 populateBeads();
