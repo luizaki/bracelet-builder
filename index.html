@@ -50,52 +50,54 @@
 
         <hr class="border-t-2 border-gray-300" />
 
-        <div id="bracelet-gallery" class="grid mx-auto w-3/4 gap-4">
-            <h2 class="text-center select-none">Your Bracelets</h2>
-            <div id="saved-bracelets" class="flex flex-wrap items-center justify-center gap-4"></div>
-        </div>
-
-        <hr class="border-t-2 border-gray-300" />
-
-        <h2 class="text-center">Order Details</h2>
-        <div id="billing-payment" class="grid gap-2 grid-cols-1 md:grid-cols-2 mx-auto mb-5 w-3/4 rounded-lg p-5 md:p-10 bg-white shadow">
-            <div id="billing-details" class="items-center"></div>
-            <div id="payment-details">
-                <p class="text-center">For online payment, kindly send to:</p>
-                <p class="text-center font-bold">09162846938<br />Angel A.</p>
-                <img src="./src/assets/qr.jpg" alt="QR Code for Payment" class="mx-auto w-1/2" />
+        <div id="bracelet-bill-container">
+            <div id="bracelet-gallery" class="grid mx-auto w-3/4 gap-4">
+                <h2 class="text-center select-none">Your Bracelets</h2>
+                <div id="saved-bracelets" class="flex flex-wrap items-center justify-center gap-4"></div>
             </div>
-            <div class="col-span-1 md:col-span-2">
-                <p class="m-0 p-0 text-center text-sm italic">Cash payments only available for walk in.</p>
+    
+            <hr class="border-t-2 border-gray-300" />
+    
+            <h2 class="text-center">Order Details</h2>
+            <div id="billing-payment" class="grid gap-2 grid-cols-1 md:grid-cols-2 mx-auto mb-5 w-3/4 rounded-lg p-5 md:p-10 bg-white shadow">
+                <div id="billing-details" class="items-center"></div>
+                <div id="payment-details">
+                    <p class="text-center">For online payment, kindly send to:</p>
+                    <p class="text-center font-bold">09162846938<br />Angel A.</p>
+                    <img src="./src/assets/qr.jpg" alt="QR Code for Payment" class="mx-auto w-1/2" />
+                </div>
+                <div class="col-span-1 md:col-span-2">
+                    <p class="m-0 p-0 text-center text-sm italic">Cash payments only available for walk in.</p>
+                </div>
             </div>
-        </div>
-
-        <div id="order-form" class="mx-auto w-3/4 rounded-lg p-10 md:p-20 bg-white shadow">
-            <form class="flex flex-col gap-10">
-                <div>
-                    <label for="full-name" class="flex flex-col text-md font-medium">Full Name</label>
-                    <input type="text" id="full-name" required class="mt-1 p-2 w-full border rounded" placeholder="Juan Dela Cruz" />
-                </div>
-
-                <div>
-                    <label for="email" class="flex flex-col text-md font-medium">Email</label>
-                    <input type="text" id="email" required class="mt-1 p-2 w-full border rounded" placeholder="example@example.com" />
-                </div>
-
-                <div>
-                    <label for="phone" class="flex flex-col text-md font-medium">Phone Number</label>
-                    <input type="text" id="phone" required class="mt-1 p-2 w-full border rounded" placeholder="09123456789" />
-                </div>
-
-                <div>
-                    <label for="proof-of-payment" class="flex flex-col text-md font-medium">Proof of Payment</label>
-                    <input type="file" accept="image/*" id="proof-of-payment" required class="mt-1 p-2 w-full border rounded" />
-                </div>
-
-                <div class="flex justify-center">
-                    <button type="submit" class="bg-violet-800 text-white py-2 px-4 mt-3 w-1/2 rounded hover:bg-violet-900">Submit</button>
-                </div>
-            </form>
+    
+            <div id="order-form" class="mx-auto w-3/4 rounded-lg p-10 md:p-20 bg-white shadow">
+                <form id="form" class="flex flex-col gap-10">
+                    <div>
+                        <label for="full-name" class="flex flex-col text-md font-medium">Full Name</label>
+                        <input type="text" name="full-name" required class="mt-1 p-2 w-full border rounded" placeholder="Juan Dela Cruz" />
+                    </div>
+    
+                    <div>
+                        <label for="email" class="flex flex-col text-md font-medium">Email</label>
+                        <input type="text" name="email" required class="mt-1 p-2 w-full border rounded" placeholder="example@example.com" />
+                    </div>
+    
+                    <div>
+                        <label for="phone" class="flex flex-col text-md font-medium">Phone Number</label>
+                        <input type="text" name="phone" required class="mt-1 p-2 w-full border rounded" placeholder="09123456789" />
+                    </div>
+    
+                    <div>
+                        <label for="proof-of-payment" class="flex flex-col text-md font-medium">Proof of Payment</label>
+                        <input type="file" accept="image/*" name="proof-of-payment" required class="mt-1 p-2 w-full border rounded" />
+                    </div>
+    
+                    <div class="flex justify-center">
+                        <button type="submit" class="bg-violet-800 text-white py-2 px-4 mt-3 w-1/2 rounded hover:bg-violet-900">Submit</button>
+                    </div>
+                </form>
+            </div>
         </div>
         
         <a href="https://github.com/luizaki/bracelet-builder" class="flex justify-center my-10">

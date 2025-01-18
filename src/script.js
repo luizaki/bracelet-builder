@@ -20,6 +20,9 @@ const savedBracelets = document.getElementById('saved-bracelets');
 const billingContainer = document.getElementById('billing-payment');
 const billing = document.getElementById('billing-details');
 const orderForm = document.getElementById('order-form');
+const form = document.getElementById('form');
+
+const toggableContainer = document.getElementById('bracelet-bill-container');
 
 // for drag/drop events
 let draggedBead = null;
@@ -273,9 +276,9 @@ function deleteBracelet(index) {
 function updateBilling() {
     // hide if no bracelets are made/bracelets are deleted
     if(bracelets.length === 0) {
-        billingContainer.style.display = 'none';
+        toggableContainer.style.display = 'none';
     } else {
-        billingContainer.style.display = 'grid';
+        toggableContainer.style.display = 'block';
 
         const braceletCount = bracelets.length;
 
@@ -288,14 +291,104 @@ function updateBilling() {
         billing.innerHTML = '<p class="font-bold">Order Summary:</p>'; // reset the billing
 
         if(singleBracelets > 0) {
-            billing.innerHTML += `<p>&ensp;Bead bracelets&ensp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;(${singleBracelets}x)&emsp;Php ${soloPrice}</p>`;
+            billing.innerHTML += `<p>&ensp;Bead bracelets&ensp;&emsp;&emsp;&emsp;(${singleBracelets}x)&emsp;Php ${soloPrice}</p>`;
         }
 
         if(pairBracelets > 0) {
             billing.innerHTML += `<p>&ensp;Bead bracelets (couple set)&emsp;(${pairBracelets}x)&emsp;&emsp;Php ${pairPrice}</p>`;
         }
+
+        billing.innerHTML += `<hr class="border-t-2 m-0 border-gray-300" /><p class="font-bold mt-2">&ensp;Total:&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Php ${soloPrice + pairPrice}</p>`;
     }
 }
 
+// handling submitted orders
+orderForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    const name = formData.get('full-name');
+    const email = formData.get('email');
+    const phoneNumber = formData.get('phone')
+    const proofOfPayment = formData.get('proof-of-payment');
+
+    try {
+        // upload proof of payment
+        const file = `${formatDate(Date.now())}-${name.replaceAll(' ', '')}.${proofOfPayment.name.split('.').pop().toLowerCase()}`;
+        const { fileData, fileError } = await supabase.storage.from('proof-of-payments').upload(file, proofOfPayment);
+
+        if(fileError) {
+            console.error(fileError);
+            alert('An error occurred while uploading the file.');
+            return;
+        }
+
+        // upload order data
+        const { orderData, orderError } = await supabase.from('orders').insert([
+            {
+                name: name,
+                email: email,
+                phone_number: phoneNumber,
+                proof_of_payment: `proof-of-payments/${file}`,
+            }
+        ])
+
+        if(orderError) {
+            console.error(orderError);
+            alert('An error occurred while submitting the order.');
+            return;
+        }
+
+        // upload bracelet data
+        for(const bracelet of bracelets) {
+            const { braceletData, braceletError } = await supabase.from('bracelets').insert([
+                {
+                    order_id: orderData[0].id,
+                    beads: convertBraceletToJson(bracelet),
+                }
+            ]);
+
+            if(braceletError) {
+                console.error(braceletError);
+                alert('An error occurred while submitting the bracelet.');
+                return;
+            }
+        }
+
+        alert('Order submitted successfully!');
+
+        // reset page
+        location.reload();
+
+    } catch (error) {
+        console.error(error);
+        alert('An unexpected error occurred.');
+    }
+});
+
+// helper function to format date in filename
+function formatDate(date) {
+    const d = new Date(date);
+
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+
+    return `${year}${month}${day}-${hours}${minutes}`;
+}
+
+// convert bead array to json for database
+function convertBraceletToJson(beads) {
+    return beads.map((bead, index) => ({
+        id: (bead.id).slice(5), // remove bead- prefix
+        position: index
+    }));
+}
+
 populateBeads();
-billingContainer.style.display = 'none'; // hide billing by default
+
+// hide by default
+toggableContainer.style.display = 'none';
