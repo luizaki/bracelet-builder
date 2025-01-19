@@ -278,7 +278,7 @@ saveButton.addEventListener('click', () => {
     if(braceletPreview.children.length === 0) {
         displayMessage(document.getElementById('preview'), 'Add some beads to the bracelet first!', 'error');
         return;
-    } else if(braceletPreview.children.length < MIN_BRACELET_SIZE) {
+    } else if(calculateTotalUnits(Array.from(braceletPreview.children)) < MIN_BRACELET_SIZE) {
         displayMessage(document.getElementById('preview'), 'Bracelet is too small!', 'error');
         return;
     }
