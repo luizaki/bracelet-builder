@@ -98,16 +98,37 @@ function createBeadElement(bead) {
         beadElement.classList.add("bg-white", "text-black", "border", "border-gray-400", "flex", "items-center", "justify-center", "text-center", "font-bold");
         beadElement.textContent = bead.proper_name;
     } else if(bead.type === 'misc') {
-        beadElement.classList.add("bg-white", "text-black", "border", "border-gray-400", "flex", "items-center", "justify-center");
+        if((bead.id).includes('heart')) {
+            beadElement.classList.add("bg-white", "text-black", "border", "border-gray-400", "flex", "items-center", "justify-center");
 
-        // create heart inside div
-        const heart = document.createElement('ion-icon');
-        heart.setAttribute('name', 'heart');
-        heart.style.fontSize = '1.25rem';
-        heart.style.color = bead.color;
-        heart.style.pointerEvents = 'none';
+            // create heart inside div
+            const heart = document.createElement('ion-icon');
+            heart.setAttribute('name', 'heart');
+            heart.style.fontSize = '1.25rem';
+            heart.style.color = bead.color;
+            heart.style.pointerEvents = 'none';
 
-        beadElement.appendChild(heart);
+            beadElement.appendChild(heart);
+        } else if((bead.id).includes('smiley')) {
+            beadElement.classList.add("flex", "items-center", "justify-center", "relative");
+            beadElement.style.backgroundColor = bead.color;
+
+            const leftEye = document.createElement('div');
+            leftEye.classList.add("w-2", "h-2", "bg-white", "rounded-full", "absolute", "top-3", "left-2");
+            const rightEye = document.createElement('div');
+            rightEye.classList.add("w-2", "h-2", "bg-white", "rounded-full", "absolute", "top-3", "right-2");
+            const mouth = document.createElement('div');
+            mouth.classList.add("w-6", "h-2", "rounded-b-full", "border-b-4", "border-white", "absolute", "bottom-2", "left-2");
+
+            // create smiley inside div
+            const smiley = document.createElement('div');
+            smiley.appendChild(leftEye);
+            smiley.appendChild(rightEye);
+            smiley.appendChild(mouth);
+            smiley.style.pointerEvents = 'none';
+
+            beadElement.appendChild(smiley);
+        }
     } else {
         console.warn('Unknown bead type:', bead.type);
     }
