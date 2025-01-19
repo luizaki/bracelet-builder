@@ -34,6 +34,7 @@ let localStock = {};
 
 // consts
 const MAX_BRACELET_SIZE = 75;
+const MIN_BRACELET_SIZE = 70;
 const COLOR_SIZE = 1;
 const LETTER_MISC_SIZE = 2;
 
@@ -255,6 +256,9 @@ function getDragAfterElement(container, x) {
 saveButton.addEventListener('click', () => {
     if(braceletPreview.children.length === 0) {
         displayMessage(document.getElementById('preview'), 'Add some beads to the bracelet first!', 'error');
+        return;
+    } else if(braceletPreview.children.length < MIN_BRACELET_SIZE) {
+        displayMessage(document.getElementById('preview'), 'Bracelet is too small!', 'error');
         return;
     }
 
