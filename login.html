@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <title>[Admin] Bracelet Order Form</title>
+        <link rel="icon" type="image/x-icon" href="./src/assets/favicon.ico">
+
+        <link href="./src/output.css" rel="stylesheet">
+    </head>
+
+    <body class="prose max-w-screen-2xl mx-2 bg-light-purple">
+        <h1 class="mx-3 mt-10 text-center select-none">Bracelet Orders Admin Login</h1>
+
+        <hr class="mt-1 border-t-2 border-gray-300" />
+
+        <h2 class="text-center">Admin Login</h2>
+        <div id="login-form-container" class="mx-auto w-3/4 rounded-lg p-10 md:p-20 bg-white shadow">
+            <form id="login-form" class="flex flex-col gap-10">
+                <div>
+                    <label for="email" class="flex flex-col text-md font-medium">Email</label>
+                    <input type="text" name="email" required class="mt-1 p-2 w-full border rounded" placeholder="example@example.com" />
+                </div>
+
+                <div>
+                    <label for="password" class="flex flex-col text-md font-medium">Password</label>
+                    <input type="password" name="password" required class="mt-1 p-2 w-full border rounded" />
+                </div>
+
+                <div class="flex justify-center">
+                    <button type="submit" class="bg-violet-800 text-white py-2 px-4 mt-3 w-1/2 rounded hover:bg-violet-900">Submit</button>
+                </div>
+            </form>
+        </div>
+
+        <a href="https://github.com/luizaki/bracelet-builder" class="flex justify-center my-10">
+            <ion-icon name="logo-github" class="text-4xl text-violet-300 hover:text-violet-500"></ion-icon>
+        </a>
+
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/dist/umd/supabase.min.js"></script>
+        <script type="module" src="./src/js/login.js"></script>
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    </body>
+</html>
