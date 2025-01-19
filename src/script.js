@@ -17,7 +17,6 @@ const saveButton = document.getElementById('save-button');
 const savedBracelets = document.getElementById('saved-bracelets');
 
 // divs for submitting orders
-const billingContainer = document.getElementById('billing-payment');
 const billing = document.getElementById('billing-details');
 const orderForm = document.getElementById('order-form');
 const form = document.getElementById('form');
@@ -29,6 +28,11 @@ let draggedBead = null;
 
 // tracking bracelets
 let bracelets = [];
+
+// for bead tracking
+const MAX_BRACELET_SIZE = 75;
+const COLOR_SIZE = 1;
+const LETTER_MISC_SIZE = 2;
 
 // consts
 const pricePerPair = 60;
@@ -103,64 +107,92 @@ function createBeadElement(bead) {
 }
 
 function addToBracelet(bead) {
-    const newBead = bead.cloneNode(true);
-    newBead.setAttribute('draggable', 'true');
+    // check if bracelet is full
+    const currentUnits = calculateTotalUnits(Array.from(braceletPreview.children));
+    const beadUnit = bead.type === 'color' ? COLOR_SIZE : LETTER_MISC_SIZE;
 
-    // resize color beads
-    if(!(newBead.classList.contains('items-center'))) {
-        newBead.classList.remove('w-10', 'h-10');
-        newBead.classList.add('w-7', 'h-7');
-    }
+    if(currentUnits + beadUnit <= MAX_BRACELET_SIZE) {
+        const newBead = bead.cloneNode(true);
+        newBead.setAttribute('draggable', 'true');
 
-    // change margin
-    newBead.classList.remove('m-2');
-    newBead.classList.add('m-1');
-
-    // for tracking purposes
-    newBead.classList.add('bracelet-bead');
-
-    // add remove listener
-    newBead.addEventListener('click', () => {
-        newBead.remove();
-    });
-
-    // add drag even listeners (desktop)
-    newBead.addEventListener('dragstart', (e) => {
-        draggedBead = newBead;
-        newBead.classList.add('opacity-50');
-    });
-    
-    newBead.addEventListener('dragend', () => {
-        draggedBead = null;
-        newBead.classList.remove('opacity-50');
-    });
-
-    // add touch event listeners (mobile)
-    newBead.addEventListener('touchstart', (e) => {
-        draggedBead = newBead;
-        initialTouchX = e.touches[0].clientX;
-        newBead.classList.add('opacity-50');
-    });
-
-    newBead.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-
-        const touchX = e.touches[0].clientX;
-        const afterElement = getDragAfterElement(braceletPreview, touchX);
-
-        if(afterElement == null) {
-            braceletPreview.appendChild(draggedBead);
-        } else {
-            braceletPreview.insertBefore(draggedBead, afterElement);
+        // resize color beads
+        if(!(newBead.classList.contains('items-center'))) {
+            newBead.classList.remove('w-10', 'h-10');
+            newBead.classList.add('w-7', 'h-7');
         }
-    });
 
-    newBead.addEventListener('touchend', () => {
-        draggedBead = null;
-        newBead.classList.remove('opacity-50');
-    });
+        // change margin
+        newBead.classList.remove('m-2');
+        newBead.classList.add('m-1');
 
-    braceletPreview.appendChild(newBead);
+        // for tracking purposes
+        newBead.classList.add('bracelet-bead');
+
+        // add remove listener
+        newBead.addEventListener('click', () => {
+            newBead.remove();
+        });
+
+        // add drag even listeners (desktop)
+        newBead.addEventListener('dragstart', (e) => {
+            draggedBead = newBead;
+            newBead.classList.add('opacity-50');
+        });
+        
+        newBead.addEventListener('dragend', () => {
+            draggedBead = null;
+            newBead.classList.remove('opacity-50');
+        });
+
+        // add touch event listeners (mobile)
+        newBead.addEventListener('touchstart', (e) => {
+            draggedBead = newBead;
+            initialTouchX = e.touches[0].clientX;
+            newBead.classList.add('opacity-50');
+        });
+
+        newBead.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+
+            const touchX = e.touches[0].clientX;
+            const afterElement = getDragAfterElement(braceletPreview, touchX);
+
+            if(afterElement == null) {
+                braceletPreview.appendChild(draggedBead);
+            } else {
+                braceletPreview.insertBefore(draggedBead, afterElement);
+            }
+        });
+
+        newBead.addEventListener('touchend', () => {
+            draggedBead = null;
+            newBead.classList.remove('opacity-50');
+        });
+
+        braceletPreview.appendChild(newBead);
+        updateRemainingSpace();
+    } else {
+        displayMessage(document.getElementById('preview'), 'Bracelet is full!', 'error');
+        return;
+    }
+}
+
+// get how much space is currently in the bracelet
+function calculateTotalUnits(beads) {
+    return beads.reduce((total, bead) => {
+        if(bead.type !== 'color') {
+            return total + LETTER_MISC_SIZE;
+        } else {
+            return total + COLOR_SIZE;
+        }
+    }, 0);
+}
+
+function updateRemainingSpace() {
+    const currentUnits = calculateTotalUnits(Array.from(braceletPreview.children));
+    const remainingUnits = MAX_BRACELET_SIZE - currentUnits;
+
+    document.getElementById('remaining-space').textContent = `Approx. remaining space: ${remainingUnits} beads`;
 }
 
 // add listener for drag/drop events in bracelet-preview
@@ -269,7 +301,6 @@ function deleteBracelet(index) {
         wrapper.dataset.index = newIndex;
     });
 
-    updateBilling();
 }
 
 // track billing
