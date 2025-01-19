@@ -30,11 +30,13 @@ let draggedBead = null;
 let bracelets = [];
 
 // for bead tracking
+let localStock = {};
+
+// consts
 const MAX_BRACELET_SIZE = 75;
 const COLOR_SIZE = 1;
 const LETTER_MISC_SIZE = 2;
 
-// consts
 const pricePerPair = 60;
 const pricePerSolo = 39;
 
@@ -54,7 +56,17 @@ async function populateBeads() {
     const beads = await fetchBeads();
 
     beads.forEach(bead => {
+        localStock[bead.id] = bead.qty;
         const beadElement = createBeadElement(bead);
+
+        if(bead.qty > 0){
+            // add click listener to add to bracelet-preview
+            beadElement.addEventListener('click', addToBraceletHandler);
+        } else {
+            beadElement.classList.add("opacity-50");
+            beadElement.title += ' (out of stock)';
+            beadElement.removeEventListener('click', addToBraceletHandler);
+        }
 
         // add hover classes for ux
         beadElement.classList.add("cursor-pointer", "hover:scale-110", "transition-transform");
@@ -66,11 +78,6 @@ async function populateBeads() {
         } else if(bead.type === 'misc') {
             miscContainer.appendChild(beadElement);
         }
-
-        // add click listener to add to bracelet-preview
-        beadElement.addEventListener('click', () => {
-            addToBracelet(beadElement);
-        });
     });
 }
 
@@ -97,6 +104,7 @@ function createBeadElement(bead) {
         heart.setAttribute('name', 'heart');
         heart.style.fontSize = '1.25rem';
         heart.style.color = bead.color;
+        heart.style.pointerEvents = 'none';
 
         beadElement.appendChild(heart);
     } else {
@@ -106,10 +114,14 @@ function createBeadElement(bead) {
     return beadElement;
 }
 
-function addToBracelet(bead) {
+function addToBraceletHandler(e) {
+    addToBracelet(e.target);
+}
+
+function addToBracelet(bead, deductStock = true) {
     // check if bracelet is full
     const currentUnits = calculateTotalUnits(Array.from(braceletPreview.children));
-    const beadUnit = bead.type === 'color' ? COLOR_SIZE : LETTER_MISC_SIZE;
+    const beadUnit = bead.classList.contains('items-center') ? LETTER_MISC_SIZE : COLOR_SIZE;
 
     if(currentUnits + beadUnit <= MAX_BRACELET_SIZE) {
         const newBead = bead.cloneNode(true);
@@ -125,12 +137,17 @@ function addToBracelet(bead) {
         newBead.classList.remove('m-2');
         newBead.classList.add('m-1');
 
-        // for tracking purposes
-        newBead.classList.add('bracelet-bead');
-
         // add remove listener
         newBead.addEventListener('click', () => {
             newBead.remove();
+            if (localStock[(bead.id).slice(5)] <= 0) {
+                bead.classList.remove('opacity-50');
+                bead.title = bead.title.slice(0, -15);
+                bead.addEventListener('click', addToBraceletHandler);
+            }
+            localStock[(bead.id).slice(5)] += 1;
+
+            updateRemainingSpace();
         });
 
         // add drag even listeners (desktop)
@@ -171,6 +188,17 @@ function addToBracelet(bead) {
 
         braceletPreview.appendChild(newBead);
         updateRemainingSpace();
+
+        // update stock
+        if(deductStock) {
+            localStock[(bead.id).slice(5)] -= 1;
+        }
+
+        if(localStock[(bead.id).slice(5)] <= 0) {
+            bead.classList.add('opacity-50');
+            bead.title += ' (out of stock)';
+            bead.removeEventListener('click', addToBraceletHandler);
+        }
     } else {
         displayMessage(document.getElementById('preview'), 'Bracelet is full!', 'error');
         return;
@@ -180,7 +208,7 @@ function addToBracelet(bead) {
 // get how much space is currently in the bracelet
 function calculateTotalUnits(beads) {
     return beads.reduce((total, bead) => {
-        if(bead.type !== 'color') {
+        if(bead.classList.contains('items-center')) {
             return total + LETTER_MISC_SIZE;
         } else {
             return total + COLOR_SIZE;
@@ -271,9 +299,13 @@ saveButton.addEventListener('click', () => {
 
     // clear bracelet preview
     braceletPreview.innerHTML = "";
+    updateRemainingSpace();
 
     // update billing
     updateBilling();
+
+    // update stock on db
+    syncStock();
 
     displayMessage(document.getElementById('preview'), 'Bracelet saved!', 'success');
 });
@@ -285,7 +317,7 @@ function editBracelet(index) {
     // re-add beads to preview
     beads.forEach(bead => {
         bead.classList.add('cursor-pointer', 'hover:scale-110', 'transition-transform');
-        addToBracelet(bead);
+        addToBracelet(bead, false);
     });
 
     // remove from savedBracelets
@@ -294,13 +326,27 @@ function editBracelet(index) {
 }
 
 function deleteBracelet(index) {
+    // restock beads
+    const beads = bracelets[index];
+    beads.forEach(bead => {
+        if (localStock[(bead.id).slice(5)] <= 0) {
+            const beadButton = document.getElementById('bead-selector').querySelector(`#${bead.id}`);
+            beadButton.classList.remove('opacity-50');
+            beadButton.title = bead.title.slice(0, -15);
+            beadButton.addEventListener('click', addToBraceletHandler);
+        }
+        
+        localStock[(bead.id).slice(5)] += 1;
+    });
+
+    syncStock();
+
     bracelets.splice(index, 1);
     savedBracelets.children[index].remove();
 
     Array.from(savedBracelets.children).forEach((wrapper, newIndex) => {
         wrapper.dataset.index = newIndex;
     });
-
 }
 
 // track billing
@@ -333,6 +379,16 @@ function updateBilling() {
 
         billing.innerHTML += `<hr class="border-t-2 m-0 border-gray-300" /><div class="flex justify-between"><span class="font-bold mt-2">Total</span><span></span><span class="text-right">Php ${soloPrice + pairPrice}</span></div></div>`;
     }
+}
+
+// update stock to db
+async function syncStock() {
+    const formattedStock = Object.entries(localStock).map(([id, qty]) => ({
+        id,
+        qty,
+    }));
+    
+    const { error } = await supabase.from('beads').upsert(formattedStock);
 }
 
 // handling submitted orders
