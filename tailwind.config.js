@@ -4,7 +4,9 @@ const { fontFamily } = require("tailwindcss/defaultTheme");
 
 module.exports = {
   content: [
-    './index.html', 
+    './index.html',
+    './login.html',
+    './admin.html',
     './src/**/*.{js,ts,jsx,tsx}',
  ],
   theme: {
