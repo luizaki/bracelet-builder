@@ -232,15 +232,15 @@ function createBeadElement(bead) {
 
             beadElement.appendChild(heart);
         } else if((bead.id).includes('smiley')) {
-            beadElement.classList.add("flex", "items-center", "justify-center", "relative");
+            beadElement.classList.add("w-8", "h-8", "flex", "items-center", "justify-center", "relative");
             beadElement.style.backgroundColor = bead.color;
 
             const leftEye = document.createElement('div');
-            leftEye.classList.add("w-2", "h-2", "bg-white", "rounded-full", "absolute", "top-3", "left-2");
+            leftEye.classList.add("w-1", "h-1", "bg-white", "rounded-full", "absolute", "top-3", "left-2");
             const rightEye = document.createElement('div');
-            rightEye.classList.add("w-2", "h-2", "bg-white", "rounded-full", "absolute", "top-3", "right-2");
+            rightEye.classList.add("w-1", "h-1", "bg-white", "rounded-full", "absolute", "top-3", "right-2");
             const mouth = document.createElement('div');
-            mouth.classList.add("w-6", "h-2", "rounded-b-full", "border-b-4", "border-white", "absolute", "bottom-2", "left-2");
+            mouth.classList.add("w-4", "h-2", "rounded-b-full", "border-b-4", "border-white", "absolute", "bottom-1.5", "left-2");
 
             // create smiley inside div
             const smiley = document.createElement('div');

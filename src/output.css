@@ -1121,6 +1121,10 @@ video {
   inset: 0px;
 }
 
+.bottom-1\.5 {
+  bottom: 0.375rem;
+}
+
 .bottom-2 {
   bottom: 0.5rem;
 }
@@ -1241,6 +1245,10 @@ video {
   display: none;
 }
 
+.h-1 {
+  height: 0.25rem;
+}
+
 .h-10 {
   height: 2.5rem;
 }
@@ -1269,6 +1277,10 @@ video {
   min-height: 8rem;
 }
 
+.w-1 {
+  width: 0.25rem;
+}
+
 .w-1\/2 {
   width: 50%;
 }
@@ -1291,6 +1303,10 @@ video {
 
 .w-3\/4 {
   width: 75%;
+}
+
+.w-4 {
+  width: 1rem;
 }
 
 .w-5 {
