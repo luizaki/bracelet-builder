@@ -166,6 +166,7 @@ function addToBracelet(bead, deductStock = true) {
                 bead.classList.remove('opacity-50');
                 bead.title = bead.title.slice(0, -15);
                 bead.addEventListener('click', addToBraceletHandler);
+                updateRemainingSpace();
             }
             localStock[(bead.id).slice(5)] += 1;
 
