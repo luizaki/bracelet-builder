@@ -33,8 +33,8 @@ let bracelets = [];
 let localStock = {};
 
 // consts
-const MAX_BRACELET_SIZE = 75;
-const MIN_BRACELET_SIZE = 70;
+const MAX_BRACELET_SIZE = 90;
+const MIN_BRACELET_SIZE = 75;
 const COLOR_SIZE = 1;
 const LETTER_MISC_SIZE = 3;
 
