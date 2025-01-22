@@ -440,18 +440,33 @@ orderForm.addEventListener('submit', async (e) => {
                 console.error(fileError);
                 displayMessage(orderForm, 'An error occurred while uploading the file.', 'error');
                 return;
-            }   
-        }
+            }
 
-        const proofOfPaymentFile = proofOfPayment.name === '' ? '' : `proof-of-payments/${file}`;
+            const proofOfPaymentFile = proofOfPayment.name === '' ? '' : `proof-of-payments/${file}`;
+
+            // upload order data
+            const { data: orderData, error: orderError } = await supabase.from('orders').insert([
+                {
+                    name: name,
+                    email: email,
+                    phone_number: phoneNumber,
+                    proof_of_payment: proofOfPaymentFile,
+                }
+            ]).select();
+
+            if(orderError) {
+                console.error(orderError);
+                displayMessage(orderForm, 'An error occurred while submitting the order.', 'error');
+                return;
+            }
+        }
 
         // upload order data
         const { data: orderData, error: orderError } = await supabase.from('orders').insert([
             {
                 name: name,
                 email: email,
-                phone_number: phoneNumber,
-                proof_of_payment: proofOfPaymentFile,
+                phone_number: phoneNumber
             }
         ]).select();
 
@@ -480,7 +495,9 @@ orderForm.addEventListener('submit', async (e) => {
         displayMessage(orderForm, 'Order submitted successfully!', 'success');
 
         // reset page
-        location.reload();
+        setTimeout(() => {
+            location.reload();
+        }, 1500);
 
     } catch (error) {
         console.error(error);
