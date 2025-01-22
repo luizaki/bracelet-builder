@@ -116,6 +116,17 @@ async function loadOrders() {
     viewIcons.forEach(icon => {
         icon.addEventListener('click', openBraceletPopup);
     });
+
+    const claimedChecks = document.querySelectorAll('.claimed-check');
+    claimedChecks.forEach(check => {
+        check.addEventListener('change', async () => {
+            const { error } = await supabase.from('orders').update({ is_claimed: check.checked }).eq('id', check.target.id.slice(0, -8));
+
+            if (error) {
+                console.error('Error updating order status:', error);
+            }
+        });
+    });
 }
 
 function formatDate(date) {
