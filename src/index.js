@@ -242,7 +242,7 @@ function calculateTotalUnits(beads) {
 function updateRemainingSpace() {
     const currentUnits = calculateTotalUnits(Array.from(braceletPreview.children));
     const remainingUnits = MAX_BRACELET_SIZE - currentUnits;
-    const remainingUnits2 = MIN_BRACELET_SIZE - currentUnits;
+    const remainingUnits2 = MIN_BRACELET_SIZE - currentUnits >= 0 ? MIN_BRACELET_SIZE - currentUnits : 0;
 
     document.getElementById('remaining-space').textContent = `Approx. remaining space: ${remainingUnits2} - ${remainingUnits} beads`;
 }
@@ -428,17 +428,22 @@ orderForm.addEventListener('submit', async (e) => {
     const email = formData.get('email');
     const phoneNumber = formData.get('phone')
     const proofOfPayment = formData.get('proof-of-payment');
+    console.log(proofOfPayment)
 
     try {
-        // upload proof of payment
-        const file = `${formatDate(Date.now())}-${name.replaceAll(' ', '')}.${proofOfPayment.name.split('.').pop().toLowerCase()}`;
-        const { data: fileData, error: fileError } = await supabase.storage.from('proof-of-payments').upload(file, proofOfPayment);
+        if(proofOfPayment.name !== '') {
+            // upload proof of payment if exists
+            const file = `${formatDate(Date.now())}-${name.replaceAll(' ', '')}.${proofOfPayment.name.split('.').pop().toLowerCase()}`;
+            const { data: fileData, error: fileError } = await supabase.storage.from('proof-of-payments').upload(file, proofOfPayment);
 
-        if(fileError) {
-            console.error(fileError);
-            displayMessage(orderForm, 'An error occurred while uploading the file.', 'error');
-            return;
+            if(fileError) {
+                console.error(fileError);
+                displayMessage(orderForm, 'An error occurred while uploading the file.', 'error');
+                return;
+            }   
         }
+
+        const proofOfPaymentFile = proofOfPayment.name === '' ? '' : `proof-of-payments/${file}`;
 
         // upload order data
         const { data: orderData, error: orderError } = await supabase.from('orders').insert([
@@ -446,7 +451,7 @@ orderForm.addEventListener('submit', async (e) => {
                 name: name,
                 email: email,
                 phone_number: phoneNumber,
-                proof_of_payment: `proof-of-payments/${file}`,
+                proof_of_payment: proofOfPaymentFile,
             }
         ]).select();
 
