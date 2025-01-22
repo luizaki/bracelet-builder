@@ -36,7 +36,7 @@ let localStock = {};
 const MAX_BRACELET_SIZE = 75;
 const MIN_BRACELET_SIZE = 70;
 const COLOR_SIZE = 1;
-const LETTER_MISC_SIZE = 2;
+const LETTER_MISC_SIZE = 3;
 
 const pricePerPair = 60;
 const pricePerSolo = 39;
@@ -242,8 +242,9 @@ function calculateTotalUnits(beads) {
 function updateRemainingSpace() {
     const currentUnits = calculateTotalUnits(Array.from(braceletPreview.children));
     const remainingUnits = MAX_BRACELET_SIZE - currentUnits;
+    const remainingUnits2 = MIN_BRACELET_SIZE - currentUnits;
 
-    document.getElementById('remaining-space').textContent = `Approx. remaining space: ${remainingUnits} beads`;
+    document.getElementById('remaining-space').textContent = `Approx. remaining space: ${remainingUnits2} - ${remainingUnits} beads`;
 }
 
 // add listener for drag/drop events in bracelet-preview
