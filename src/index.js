@@ -66,7 +66,6 @@ async function populateBeads() {
         } else {
             beadElement.classList.add("opacity-50");
             beadElement.title += ' (out of stock)';
-            beadElement.removeEventListener('click', addToBraceletHandler);
         }
 
         // add hover classes for ux
@@ -141,6 +140,12 @@ function addToBraceletHandler(e) {
 }
 
 function addToBracelet(bead, deductStock = true) {
+    // check if bead is out of stock
+    if(bead.classList.contains('opacity-50')) {
+        displayMessage(document.getElementById('preview'), 'This bead is out of stock!', 'error');
+        return;
+    }
+    
     // check if bracelet is full
     const currentUnits = calculateTotalUnits(Array.from(braceletPreview.children));
     const beadUnit = bead.classList.contains('items-center') ? LETTER_MISC_SIZE : COLOR_SIZE;
