@@ -120,7 +120,7 @@ async function loadOrders() {
     const claimedChecks = document.querySelectorAll('.claimed-check');
     claimedChecks.forEach(check => {
         check.addEventListener('change', async () => {
-            const { error } = await supabase.from('orders').update({ is_claimed: check.checked }).eq('id', check.target.id.slice(0, -8));
+            const { error } = await supabase.from('orders').update({ is_claimed: check.checked }).eq('id', check.id.slice(0, -8));
 
             if (error) {
                 console.error('Error updating order status:', error);
