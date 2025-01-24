@@ -143,7 +143,7 @@ function addToBraceletHandler(e) {
 function addToBracelet(bead, deductStock = true) {
     // check if bead is out of stock
     if(bead.classList.contains('opacity-50')) {
-        displayMessage(document.getElementById('preview'), 'This bead is out of stock!', 'error');
+        alert('This bead is out of stock!');
         return;
     }
     
