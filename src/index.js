@@ -64,6 +64,7 @@ async function populateBeads() {
             // add click listener to add to bracelet-preview
             beadElement.addEventListener('click', addToBraceletHandler);
         } else {
+            beadElement.addEventListener('click', addToBraceletHandler);
             beadElement.classList.add("opacity-50");
             beadElement.title += ' (out of stock)';
         }
