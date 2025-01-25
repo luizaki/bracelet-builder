@@ -18,6 +18,7 @@ supabase.auth.getSession().then(({ data, error }) => {
 const options = document.getElementById('options');
 const orders = document.getElementById('orders-content');
 const stock = document.getElementById('stock-content');
+const toggle = document.getElementById('toggle-ordering');
 
 // rows div
 const orderRows = document.getElementById('order-rows');
@@ -319,3 +320,13 @@ async function editStock(e) {
         loadStock();
     }
 }
+
+toggle.addEventListener('click', async () => {
+    if(toggle.textContent === 'Close Orders') {
+        const { error } = await supabase.from('site').update({ is_closed: true }).eq('id', 1);
+        toggle.textContent = 'Open Orders';
+    } else {
+        const { error } = await supabase.from('site').update({ is_closed: false }).eq('id', 1);
+        toggle.textContent = 'Close Orders';
+    }
+});

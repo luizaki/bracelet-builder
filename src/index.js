@@ -550,3 +550,17 @@ populateBeads();
 
 // hide by default
 toggableContainer.style.display = 'none';
+
+// check if ordering is closed
+window.addEventListener('load', async () => {
+    const { data, error } = await supabase.from('site').select('is_closed');
+
+    if(error) {
+        console.error('Error fetching settings:', error);
+        return;
+    }
+
+    if(data[0].is_closed) {
+        document.getElementById('closed-popup').classList.remove('hidden');
+    }
+})
